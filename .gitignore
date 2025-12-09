@@ -3,3 +3,4 @@ src/pytest_cache
 src/pytest_cache/*
 test/pytest_cache
 test/pytest_cache/*
+src/__pycache__
