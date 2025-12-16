@@ -12,7 +12,7 @@ duplicate_line_count = 0
 unique_ids = set()
 duplicate_id = set()
 
-#Process input files and generates sample IDs with SP- prefix
+#Process input file and generates sample IDs with SP- prefix
 with open(input_file, "r", encoding="utf-8-sig") as first_file, open(sp_output_file,"w",  encoding="utf-8-sig") as second_file:
     for line in first_file:
         input_line_count += 1
@@ -20,6 +20,9 @@ with open(input_file, "r", encoding="utf-8-sig") as first_file, open(sp_output_f
         
         if line:
             parts = line.split("-")
+            if len(parts) < 2:
+                print(f"Warning: Skipping malformed line {input_line_count}: '{line}'")
+                continue
             new_id = "SP-" + parts[1]
             
             if new_id in unique_ids:
@@ -39,7 +42,7 @@ with open(duplicates_file, "w",encoding="utf-8-sig") as dup_id_file:
 # Print summary 
 print(f"Total lines in input file: {input_line_count}")
 print(f"Total lines written to output file: {sp_output_line_count}")
-print(f"Total number of files that are duplicated: {duplicate_line_count}")
+print(f"Total number of duplicate sample IDs: {duplicate_line_count}")
 
 #Generate SQL appropriate list of all the unique IDs
 sql_list_format = "(" + ", ".join(f"'{d}'" for d in sorted(unique_ids)) + ")"
