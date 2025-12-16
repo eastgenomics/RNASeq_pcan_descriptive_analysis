@@ -3,6 +3,6 @@ src/pytest_cache
 src/pytest_cache/*
 test/pytest_cache
 test/pytest_cache/*
-src/__pycache__/*
-test/__pycache__/*
-input/*
+src/__pycache__
+test/__pycache__
+input
