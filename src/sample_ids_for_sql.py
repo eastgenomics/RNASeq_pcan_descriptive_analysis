@@ -13,31 +13,41 @@ unique_ids = set()
 duplicate_id = set()
 
 #Process input file and generates sample IDs with SP- prefix
-with open(input_file, "r", encoding="utf-8-sig") as first_file, open(sp_output_file,"w",  encoding="utf-8-sig") as second_file:
-    for line in first_file:
-        input_line_count += 1
-        line = line.strip()
-        
-        if line:
-            parts = line.split("-")
-            if len(parts) < 2:
-                print(f"Warning: Skipping malformed line {input_line_count}: '{line}'")
-                continue
-            new_id = "SP-" + parts[1]
+try:
+    with open(input_file, "r", encoding="utf-8-sig") as first_file, open(sp_output_file,"w",  encoding="utf-8-sig") as second_file:
+        for line in first_file:
+            input_line_count += 1
+            line = line.strip()
             
-            if new_id in unique_ids:
-                duplicate_id.add(new_id)
-                duplicate_line_count += 1
+            if line:
+                parts = line.split("-")
+                if len(parts) < 2:
+                    print(f"Warning: Skipping malformed line {input_line_count}: '{line}'")
+                    continue
+                new_id = "SP-" + parts[1]
                 
-            else:
-                second_file.write(new_id + "\n")
-                unique_ids.add(new_id)
-                sp_output_line_count += 1
-
-#Write duplicates to a file
-with open(duplicates_file, "w",encoding="utf-8-sig") as dup_id_file:
-    for dup in sorted(duplicate_id):
-        dup_id_file.write(dup + "\n")
+                if new_id in unique_ids:
+                    duplicate_id.add(new_id)
+                    duplicate_line_count += 1
+                    
+                else:
+                    second_file.write(new_id + "\n")
+                    unique_ids.add(new_id)
+                    sp_output_line_count += 1
+    
+    #Write duplicates to a file
+    with open(duplicates_file, "w",encoding="utf-8-sig") as dup_id_file:
+        for dup in sorted(duplicate_id):
+            dup_id_file.write(dup + "\n")
+except FileNotFoundError as e:
+    print(f"Error: Input file '{input_file}' not found: {e}")
+    exit(1)
+except PermissionError as e:
+    print(f"Error: Permission denied when accessing files: {e}")
+    exit(1)
+except IOError as e:
+    print(f"Error: I/O error occurred: {e}")
+    exit(1)
 
 # Print summary 
 print(f"Total lines in input file: {input_line_count}")
