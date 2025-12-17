@@ -1,4 +1,4 @@
-#!/bin/usr/sh
+#!/bin/bash
 
 #Rationale: compare gene fusions detectable from PANCAN and RES with the gene fusion reported in the NHS Test Directory
 
