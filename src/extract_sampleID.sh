@@ -1,6 +1,7 @@
 #!/bin/bash
-
 #Rationale: extract sample IDs for all Eunomia runs from DNANexus
+
++set -e
 
 dx login
 #choose project 003_251118_RNASeq_GeneExpression
