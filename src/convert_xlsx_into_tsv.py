@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 #Rationale: convert xlsx file into tsv file
 
 import argparse
