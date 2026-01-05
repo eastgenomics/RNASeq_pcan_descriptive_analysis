@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
         "--output_file",
         type=str,
         required=True,
-        help="The folder name in which to save the plots"
+        help="The txt file name in which to save the clean dataset with new columns for fusion results in cartegorical variables"
     )
     
     args = parser.parse_args()
@@ -295,6 +295,31 @@ def categorise_passed(clean_digest_passed_df: pd.DataFrame, new_col_name: str, p
 
 
 
+def write_df_samples_fusion_col(clean_digest_passed_fusion_df: pd.DataFrame, output_filename: str):
+    """
+    Write into a tab separated file the clean dataset with sample info and the 2 new columns for fusions result in categorical values
+    Parameters
+    ----------
+    clean_digest_passed_fusion_df : pd.DataFrame
+        Pandas dataframe with 'test_passed_failed' and 'test_passed_fusion' columns
+    
+    output_filename: str
+        name for the output file
+        ----------
+    Error
+        If the column 'test_passed_fusion' is not present
+    """    
+    # Define the conditions and corresponding categories
+    if (clean_digest_passed_fusion_df['test_passed_fusion'] is True):
+        raise KeyError('Dataframe does not have the required column: "test_passed_fusion"')
+    
+    #Write out the clean dataset with fusion columns in categorical variables:
+    clean_digest_passed_fusion_df.to_csv(output_filename, index=False, sep="\t")
+
+
+
+
+#Parameters:
 colname_title_pasfail = 'test_passed_failed'
 pattern_to_match_passed = 'fusion_detected|fusion_has_been_detected|fusion_has_been_identified|the_fusion_was|no.*clinically*gene_fusion.*detect|no.*gene_fusion.*detect|fusion_did_not_detect|trusight_rna_pan_cancer.*did_not_detect|fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'
 colname_value_passed = '1'
@@ -302,6 +327,7 @@ colname_value_passed = '1'
 colname_title_fusion = 'test_passed_fusion'
 pattern_to_match_fusion = {'1':'a_.*_has_been_identified|fusion_has_been_identified|the_fusion_was|uncertain','2':'uncertain'}
 
+#df_clean_output_filename = '../data_not_be_public/pcan_patient_info_cleaned.txt'
 
 def main():
     args = parse_args()
@@ -311,6 +337,11 @@ def main():
     df_samples_clean = clean_dataframe(df_samples_validated_colnumber_colnames)
     df_samples_clean_passed_col = create_column_passedfail(df_samples_clean, colname_title_pasfail, pattern_to_match_passed, colname_value_passed)
     df_samples_clean_passed_fusion_col = categorise_passed(df_samples_clean_passed_col, colname_title_fusion, pattern_to_match_fusion)
+    write_df_samples_fusion_col(df_samples_clean_passed_fusion_col, args.output_file)
 
 if __name__ == "__main__":
     main()
+
+#Quick check in bash to see that all samples are saved in the cleaned dataset:
+#awk -F ',' '{print $1}' ../data_not_be_public/pcan_patient_info.csv | \
+#    grep -F -f - ../data_not_be_public/pcan_patient_info_cleaned.txt | wc -l

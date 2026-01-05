@@ -28,7 +28,6 @@ def test_that_error_raised_if_colnames_are_not_as_expected():
         csd.validate_df_columns_name(df_with_wrong_col_number)
 
 
-#to be checked !
 def test_that_error_raised_if_colnames_not_found():
     """
     Test that a KeyError is raised if column name is not found in the dataframe
@@ -36,5 +35,7 @@ def test_that_error_raised_if_colnames_not_found():
     df_missing_colname = pd.DataFrame(columns=['test_result'])
     new_col_name_test = 'test_passed_fusion'
     pattern_match_test = {'1':'fusion_has_been_identified|the_fusion_was|^fusion_.*uncertain.*clinical.*significance|^variant*_uncertain_*significance','2':'fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'}
+    output_filename_test = '../data_not_be_public/pcan_patient_info_cleaned.txt'
     with pytest.raises(KeyError):
         csd.categorise_passed(df_missing_colname, new_col_name_test, pattern_match_test)
+        csd.write_df_samples_fusion_col(df_missing_colname, output_filename_test)
