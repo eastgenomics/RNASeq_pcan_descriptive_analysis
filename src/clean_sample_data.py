@@ -325,7 +325,7 @@ pattern_to_match_passed = 'fusion_detected|fusion_has_been_detected|fusion_has_b
 colname_value_passed = '1'
 
 colname_title_fusion = 'test_passed_fusion'
-pattern_to_match_fusion = {'1':'a_.*_has_been_identified|fusion_has_been_identified|the_fusion_was|uncertain','2':'uncertain'}
+pattern_to_match_fusion = {'1':'a_.*_has_been_identified|fusion_has_been_identified|the_fusion_was','2':'uncertain'}
 
 #df_clean_output_filename = '../data_not_be_public/pcan_patient_info_cleaned.txt'
 
