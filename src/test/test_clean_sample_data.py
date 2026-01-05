@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-import clean_sample_data as ces
+import clean_sample_data as csd
 
 def test_that_error_raised_if_not_found_file():
     """
@@ -9,7 +9,7 @@ def test_that_error_raised_if_not_found_file():
     """
     input_file = "input/not_existing_file.xlsx"
     with pytest.raises(SystemError):
-        ces.read_csv_to_dataframe(input_file)
+        csd.read_csv_to_dataframe(input_file)
 
 def test_that_error_raised_if_wrong_col_number():
     """
@@ -17,7 +17,7 @@ def test_that_error_raised_if_wrong_col_number():
     """
     df_with_wrong_col_number = pd.DataFrame(columns=['Specimen Identifier','Year of Birth','Patient Stated Ethnicity'])
     with pytest.raises(ValueError):
-        ces.validate_df_columns_number(df_with_wrong_col_number)
+        csd.validate_df_columns_number(df_with_wrong_col_number)
 
 def test_that_error_raised_if_colnames_are_not_as_expected():
     """
@@ -25,7 +25,7 @@ def test_that_error_raised_if_colnames_are_not_as_expected():
     """
     df_with_wrong_col_number = pd.DataFrame(columns=['Specimen Identifier','Year of Birth','Patient Stated Ethnicity'])
     with pytest.raises(SyntaxError):
-        ces.validate_df_columns_name(df_with_wrong_col_number)
+        csd.validate_df_columns_name(df_with_wrong_col_number)
 
 
 #to be checked !
@@ -34,7 +34,7 @@ def test_that_error_raised_if_colnames_not_found():
     Test that a KeyError is raised if column name is not found in the dataframe
     """
     df_missing_colname = pd.DataFrame(columns=['test_result'])
-    new_col_name = 'test_passed_fusion'
-    pattern_match = {'1':'fusion_has_been_identified|the_fusion_was|^fusion_.*uncertain.*clinical.*significance|^variant*_uncertain_*significance','2':'fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'}
+    new_col_name_test = 'test_passed_fusion'
+    pattern_match_test = {'1':'fusion_has_been_identified|the_fusion_was|^fusion_.*uncertain.*clinical.*significance|^variant*_uncertain_*significance','2':'fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'}
     with pytest.raises(KeyError):
-        ces.categorise_passed(df_missing_colname)
+        csd.categorise_passed(df_missing_colname, new_col_name_test, pattern_match_test)

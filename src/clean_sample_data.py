@@ -231,10 +231,10 @@ def create_column_passedfail(clean_digest_df: pd.DataFrame, new_col_name: str, p
     return clean_digest_df
 
 
-to be finished !
+#to be finished !
 def categorise_passed(clean_digest_passed_df: pd.DataFrame, new_col_name: str, pattern_match: dict) ->  pd.DataFrame:
     """
-    Categorise the passed test column into four categories: 99: failed test / 0:no clinical fusion / 1:clinical fusion / 2: uncertain significant fusion.
+    Categorise the passed test column into four categories: 99: failed test / 0:no clinical fusion / 1:clinical fusion / 2:uncertain significant fusion.
     Parameters
     ----------
     clean_df : pd.DataFrame
@@ -266,6 +266,7 @@ def categorise_passed(clean_digest_passed_df: pd.DataFrame, new_col_name: str, p
     clean_digest_passed_df[new_col_name] = ""
     
     # Define the conditions and corresponding categories (clinical fusion / vus fusion):
+    # The pattern for clinical fusion includes vus as well - they will then be categorised into vus with the appropriate mask
     value_fusion_clinical = list(pattern_match)[0]
     pattern_fusion_clinical = str(list(pattern_match.items())[0][1])
     mask_clinical = clean_digest_passed_df['test_result'].map(lambda x: bool(re.search(pattern_fusion_clinical,x)))
@@ -299,13 +300,8 @@ pattern_to_match_passed = 'fusion_detected|fusion_has_been_detected|fusion_has_b
 colname_value_passed = '1'
 
 colname_title_fusion = 'test_passed_fusion'
-#pattern_to_match_fusion = 'fusion_detected|fusion_has_been_detected|fusion_has_been_identified|the_fusion_was|fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'
-pattern_to_match_fusion = {'1':'fusion_has_been_identified|the_fusion_was|^fusion_.*uncertain.*clinical.*significance|^variant*_uncertain_*significance','2':'fusion_.*uncertain.*clinical.*significance|clinical_significance.*unclear|variant*_uncertain_*significance|diagnostic_significance.*uncertain'}
+pattern_to_match_fusion = {'1':'a_.*_has_been_identified|fusion_has_been_identified|the_fusion_was|uncertain','2':'uncertain'}
 
-
-#pattern_to_match_passed_yes_fusion = 'fusion_has_been_identified|the_fusion_was'
-#pattern_to_match_passed_no_fusion = 'no.*clinically*gene_fusion.*detect|no.*gene_fusion.*detect|fusion_did_not_detect|trusight_rna_pan_cancer.*did_not_detect'
-#pattern_to_match_passed_uncertainsignificant_fusion = 'fusion_.*uncertain.*clinical.*significance|variant*_uncertain_*significance'
 
 def main():
     args = parse_args()
