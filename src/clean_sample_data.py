@@ -21,7 +21,7 @@ def parse_args() -> argparse.Namespace:
         Namespace object of passed command line argument inputs
     """
     parser = argparse.ArgumentParser(
-        description="Required input file to convert xlsx file to tsv"
+        description="Required input file to convert csv file to tsv"
     )
     parser.add_argument(
         "-i",
@@ -65,7 +65,7 @@ def read_csv_to_dataframe(input_file) -> pd.DataFrame:
     try:
         dataframe = pd.read_csv(input_file, encoding="utf-8", header=0)
     except FileNotFoundError as exc:
-        raise SystemError(f"File not found -> {input_file}.") from exc
+        raise FileNotFoundError(f"File not found -> {input_file}.") from exc
     
     return dataframe
 
@@ -112,7 +112,7 @@ def validate_df_columns_name(input_df: pd.DataFrame) ->  pd.DataFrame:
     
     Raises
     ----------
-    SyntaxError
+    ValueError
         If columns names are not the expected ones
     """
     #using a set requirement, we can check that colname exist and that they appear in any order:
@@ -121,7 +121,7 @@ def validate_df_columns_name(input_df: pd.DataFrame) ->  pd.DataFrame:
     column_names_set = set(column_names)
     
     if (required_colnames.issubset(column_names_set) != True):
-        raise SyntaxError('Dataframe does not contain the required colnames')
+        raise ValueError('Dataframe does not contain the required colnames')
     
     print('Dataframe has the correct name columns \n--------\nStarting to clean the dataframe and create new columns based on "Test Result" column value \n--------')
     return input_df

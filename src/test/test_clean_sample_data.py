@@ -5,10 +5,10 @@ import clean_sample_data as csd
 
 def test_that_error_raised_if_not_found_file():
     """
-    Test that a SystemError is raised if an input file is not found
+    Test that a FileNotFoundError is raised if an input file is not found
     """
     input_file = "input/not_existing_file.xlsx"
-    with pytest.raises(SystemError):
+    with pytest.raises(FileNotFoundError):
         csd.read_csv_to_dataframe(input_file)
 
 def test_that_error_raised_if_wrong_col_number():
@@ -21,10 +21,10 @@ def test_that_error_raised_if_wrong_col_number():
 
 def test_that_error_raised_if_colnames_are_not_as_expected():
     """
-    Test that a SyntaxError is raised if column names are not as expected
+    Test that a ValueError is raised if column names are not as expected
     """
     df_with_wrong_col_number = pd.DataFrame(columns=['Specimen Identifier','Year of Birth','Patient Stated Ethnicity'])
-    with pytest.raises(SyntaxError):
+    with pytest.raises(ValueError):
         csd.validate_df_columns_name(df_with_wrong_col_number)
 
 
