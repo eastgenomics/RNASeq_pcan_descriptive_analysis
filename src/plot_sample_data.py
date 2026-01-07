@@ -86,7 +86,7 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     Returns
     ----------
     piechart plot
-        plt piechart saved as .png figure
+        plt.piechart saved as .png figure
     
     Raises
     ----------
@@ -103,7 +103,8 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     input_df[colnames_to_plot] = input_df[colnames_to_plot].astype("category")
     
     # Create value counts and labels to plot:
-    size= input_df[colnames_to_plot].value_counts(dropna=False)
+    size = input_df[colnames_to_plot].value_counts(dropna=False)
+    print(size)
     size_percentage = input_df[colnames_to_plot].value_counts(dropna=False, normalize=True) * 100
     labels = [f"{idx} ({val:.02f}%)" for idx, val in size_percentage.items()]
     
@@ -117,19 +118,68 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     colors = ['#12436D', '#F46A25', '#801650', '#28A197']
     plt.figure(figsize=(6,6))
     plt.pie(size, labels = labels, colors = colors)
-    plt.savefig(f"{output_folder}/piechart_{colnames_to_plot}.png")
+    plt.savefig(f"{output_folder}/piechart_{colnames_to_plot}.png",dpi=800)
     plt.show()
     plt.close()
+
+def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str):
+    """
+    Read a dataframe and do a countplot of the specified column
+
+    Parameters
+    ----------
+    input_df : pd.DataFrame
+        Input dataframe
+    
+    colnames_to_plot: str
+        Name of the column to plot a barchart
+    
+    output_folder: str
+        Output folder where to save the plot
+    
+    Returns
+    ----------
+    count plot
+        seaborn countplot saved as .png figure
+    
+    Raises
+    ----------
+    ValueError
+        If column not found in the dataframe
+    """
+    required_colnames = {colnames_to_plot}
+    column_names = input_df.columns.tolist()
+    column_names_set = set(column_names)
+    if (required_colnames.issubset(column_names_set) != True):
+        raise ValueError('Dataframe does not contain the required colname')
+    
+    #Column of interest as categorical variable: 
+    input_df[colnames_to_plot] = input_df[colnames_to_plot].astype("category")
+    
+    #Plot:
+    order = input_df[colnames_to_plot].value_counts(ascending=False).index
+    plt.figure(figsize=(6,6))
+    if (len(set(input_df[colnames_to_plot].tolist())) > 20):
+        sns.countplot(input_df, y = colnames_to_plot, color = '#12436D', order = order)
+        plt.yticks(fontsize = 8)
+    else:
+        sns.countplot(input_df, x = colnames_to_plot, color = '#12436D', order = order)
+        
+    plt.savefig(f"{output_folder}/piechart_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
+    plt.show()
+    plt.close()
+
 
 
 
 def main():
     args = parse_args()
     df_samples = read_txt_to_dataframe(args.input_file)
-    piechart_plot(df_samples, 'patient_stated_gender',args.output_folder)
-    piechart_plot(df_samples, 'test_passed_failed',args.output_folder)
-    piechart_plot(df_samples, 'test_passed_fusion',args.output_folder)
-    
+    piechart_plot(df_samples, 'patient_stated_gender', args.output_folder)
+    piechart_plot(df_samples, 'test_passed_failed', args.output_folder)
+    piechart_plot(df_samples, 'test_passed_fusion', args.output_folder)
+    count_plot(df_samples, 'patient_stated_ethnicity', args.output_folder)
+    count_plot(df_samples, 'test_directory_test_code', args.output_folder)
 
 if __name__ == "__main__":
     main()
