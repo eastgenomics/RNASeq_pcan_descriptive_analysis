@@ -2,7 +2,7 @@
 
 # system
 import argparse
-import re
+import os
 
 #library from 3rd parties:
 import numpy as np
@@ -57,7 +57,7 @@ def read_txt_to_dataframe(input_file: str) -> pd.DataFrame:
     
     Raises
     ----------
-    SystemExit
+    FileNotFoundError
         If file not found
     """
     try:
@@ -117,7 +117,7 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     colors = ['#12436D', '#F46A25', '#801650', '#28A197']
     plt.figure(figsize=(6,6))
     plt.pie(size, labels = labels, colors = colors)
-    plt.savefig(f"{output_folder}piechart_{colnames_to_plot}.png")
+    plt.savefig(f"{output_folder}/piechart_{colnames_to_plot}.png")
     plt.show()
     plt.close()
 
