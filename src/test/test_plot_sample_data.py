@@ -22,3 +22,4 @@ def test_that_error_raised_if_colnames_not_found():
     with pytest.raises(ValueError):
         psd.piechart_plot(df_missing_colname, new_col_name_test, output_filename_test)
         psd.count_plot(df_missing_colname, new_col_name_test, output_filename_test)
+        psd.box_plot(df_missing_colname, new_col_name_test, output_filename_test)

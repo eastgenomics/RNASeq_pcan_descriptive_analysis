@@ -184,7 +184,49 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
     
     plt.show()
     plt.close()
+
+
+def box_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, colnames_to_groupby=""):
+    """
+    Read a dataframe and do a countplot of the specified column
+
+    Parameters
+    ----------
+    input_df : pd.DataFrame
+        Input dataframe
     
+    colnames_to_plot: str
+        Name of column to plot a boxplot
+    
+    output_folder: str
+        Output folder where to save the plot
+    
+    colnames_to_groupby: default is Empty
+        Name of column to groupby the colnames_to_plot one
+    
+    Returns
+    ----------
+    count plot
+        seaborn countplot saved as .png figure
+    
+    Raises
+    ----------
+    ValueError
+        If column not found in the dataframe
+    """
+    required_colnames = {colnames_to_plot}
+    column_names = input_df.columns.tolist()
+    column_names_set = set(column_names)
+    if (required_colnames.issubset(column_names_set) != True):
+        raise ValueError('Dataframe does not contain the required colname')
+    
+    input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
+    
+    plt.figure(figsize=(8,6))
+    sns.boxplot(data=input_df, y = colnames_to_plot, x = colnames_to_groupby, color = '#12436D')
+    plt.savefig(f"{output_folder}/boxplot_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
+    plt.show()
+    plt.close()
 
 
 def main():
@@ -198,6 +240,7 @@ def main():
     count_plot(df_samples, 'patient_stated_ethnicity', args.output_folder)
     count_plot(df_samples, 'test_directory_test_code', args.output_folder)
     count_plot(df_samples, 'test_directory_test_code', args.output_folder, 'test_passed_fusion')
+    box_plot(df_samples, 'patient_age_at_activity', args.output_folder, 'patient_stated_gender')
 
 if __name__ == "__main__":
     main()
