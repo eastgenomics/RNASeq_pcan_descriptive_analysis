@@ -122,7 +122,8 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     plt.show()
     plt.close()
 
-def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str):
+
+def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, colnames_to_groupby=""):
     """
     Read a dataframe and do a countplot of the specified column
 
@@ -132,10 +133,13 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
         Input dataframe
     
     colnames_to_plot: str
-        Name of the column to plot a barchart
+        Name of column to plot a barchart
     
     output_folder: str
         Output folder where to save the plot
+    
+    colnames_to_groupby: default is Empty
+        Name of column to groupby the colnames_to_plot one
     
     Returns
     ----------
@@ -159,17 +163,28 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
     #Plot:
     order = input_df[colnames_to_plot].value_counts(ascending=False).index
     plt.figure(figsize=(6,6))
-    if (len(set(input_df[colnames_to_plot].tolist())) > 20):
+    
+    if (len(set(input_df[colnames_to_plot].tolist())) > 20 and not colnames_to_groupby):
         sns.countplot(input_df, y = colnames_to_plot, color = '#12436D', order = order)
         plt.yticks(fontsize = 8)
+        plt.savefig(f"{output_folder}/barchart_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
+    
+    #In case there is also the colnames_to_groupby: to use to group-by the count value for 'hue' params in the sns.countplot():
+    elif (colnames_to_groupby):
+        input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
+        order_topcount = input_df[colnames_to_plot].value_counts().iloc[:5].index #hard code as filter for top 5 items (test code)
+        colors = ['#12436D', '#F46A25', '#801650', '#28A197'] 
+        sns.countplot(input_df, x = colnames_to_plot, order = order_topcount, hue = colnames_to_groupby, palette = colors)
+        plt.legend(fontsize=8)
+        plt.savefig(f"{output_folder}/barchart_{colnames_to_plot}_by_{colnames_to_groupby}.png",dpi=800, bbox_inches="tight")
+    
     else:
         sns.countplot(input_df, x = colnames_to_plot, color = '#12436D', order = order)
-        
-    plt.savefig(f"{output_folder}/piechart_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
+        plt.savefig(f"{output_folder}/barchart_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
+    
     plt.show()
     plt.close()
-
-
+    
 
 
 def main():
@@ -178,8 +193,11 @@ def main():
     piechart_plot(df_samples, 'patient_stated_gender', args.output_folder)
     piechart_plot(df_samples, 'test_passed_failed', args.output_folder)
     piechart_plot(df_samples, 'test_passed_fusion', args.output_folder)
+    count_plot(df_samples, 'test_passed_failed', args.output_folder)
+    count_plot(df_samples, 'test_passed_fusion', args.output_folder)
     count_plot(df_samples, 'patient_stated_ethnicity', args.output_folder)
     count_plot(df_samples, 'test_directory_test_code', args.output_folder)
+    count_plot(df_samples, 'test_directory_test_code', args.output_folder, 'test_passed_fusion')
 
 if __name__ == "__main__":
     main()
