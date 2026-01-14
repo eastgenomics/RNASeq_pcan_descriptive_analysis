@@ -103,7 +103,7 @@ def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: 
     
     # Create value counts and labels to plot:
     size = input_df[colnames_to_plot].value_counts(dropna=False)
-    print(size)
+    print(f"Value counts for {colnames_to_plot}:\n{size}")
     size_percentage = input_df[colnames_to_plot].value_counts(dropna=False, normalize=True) * 100
     labels = [f"{idx} ({val:.02f}%)" for idx, val in size_percentage.items()]
     
