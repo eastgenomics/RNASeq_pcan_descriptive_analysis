@@ -223,8 +223,9 @@ def box_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, 
     if (required_colnames.issubset(column_names_set) != True):
         raise ValueError('Dataframe does not contain the required colname')
     
-    #Column of interest as categorical variable:
-    input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
+    #Column to groupby, if exists, to be convert as categorical variable:
+    if colnames_to_groupby:
+        input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
     
     #Create the folder if not existing:
     if not os.path.isdir(output_folder):
