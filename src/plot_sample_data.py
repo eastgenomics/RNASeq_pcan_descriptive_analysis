@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
         Namespace object of passed command line argument inputs
     """
     parser = argparse.ArgumentParser(
-        description="Required input file to convert xlsx file to tsv"
+        description="Required txt input file and output folder name"
     )
     parser.add_argument(
         "-i",
@@ -53,7 +53,7 @@ def read_txt_to_dataframe(input_file: str) -> pd.DataFrame:
     Returns
     ----------
     pd.DataFrame
-        txt file contents as Pandas dataframe
+        Pandas dataframe
     
     Raises
     ----------
@@ -65,7 +65,6 @@ def read_txt_to_dataframe(input_file: str) -> pd.DataFrame:
     except FileNotFoundError as exc:
         raise FileNotFoundError(f"File not found -> {input_file}.") from exc
     
-    #print(dataframe)
     return dataframe
 
 def piechart_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str):
@@ -169,10 +168,10 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
         plt.yticks(fontsize = 8)
         plt.savefig(f"{output_folder}/barchart_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
     
-    #In case there is also the colnames_to_groupby: to use to group-by the count value for 'hue' params in the sns.countplot():
+    #In case there is also the colnames_to_groupby: 'hue' params in the sns.countplot():
     elif (colnames_to_groupby):
         input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
-        order_topcount = input_df[colnames_to_plot].value_counts().iloc[:5].index #hard code as filter for top 5 items (test code)
+        order_topcount = input_df[colnames_to_plot].value_counts().iloc[:5].index #hard code as filter for top 5 -most frequent items on test code
         colors = ['#12436D', '#F46A25', '#801650', '#28A197'] 
         sns.countplot(input_df, x = colnames_to_plot, order = order_topcount, hue = colnames_to_groupby, palette = colors)
         plt.legend(fontsize=8)
@@ -188,7 +187,7 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
 
 def box_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, colnames_to_groupby=""):
     """
-    Read a dataframe and do a countplot of the specified column
+    Read a dataframe and do a boxplot of the specified column
 
     Parameters
     ----------
@@ -207,7 +206,7 @@ def box_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, 
     Returns
     ----------
     count plot
-        seaborn countplot saved as .png figure
+        seaborn boxplot saved as .png figure
     
     Raises
     ----------
@@ -244,3 +243,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#Run in a terminal as: 
+#python ${path}/plot_sample_data.py \
+# -i ${path}/df_input_cleaned.txt \
+# -o ${path}/samples_plot
