@@ -159,6 +159,10 @@ def count_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str
     #Column of interest as categorical variable: 
     input_df[colnames_to_plot] = input_df[colnames_to_plot].astype("category")
     
+    #Create the folder if not existing:
+    if not os.path.isdir(output_folder):
+        os.makedirs(output_folder)
+    
     #Plot:
     order = input_df[colnames_to_plot].value_counts(ascending=False).index
     plt.figure(figsize=(6,6))
@@ -219,8 +223,14 @@ def box_plot(input_df: pd.DataFrame, colnames_to_plot: str, output_folder: str, 
     if (required_colnames.issubset(column_names_set) != True):
         raise ValueError('Dataframe does not contain the required colname')
     
+    #Column of interest as categorical variable:
     input_df[colnames_to_groupby] = input_df[colnames_to_groupby].astype("category")
     
+    #Create the folder if not existing:
+    if not os.path.isdir(output_folder):
+        os.makedirs(output_folder)
+    
+    #Plot
     plt.figure(figsize=(8,6))
     sns.boxplot(data=input_df, y = colnames_to_plot, x = colnames_to_groupby, color = '#12436D')
     plt.savefig(f"{output_folder}/boxplot_{colnames_to_plot}.png",dpi=800, bbox_inches="tight")
